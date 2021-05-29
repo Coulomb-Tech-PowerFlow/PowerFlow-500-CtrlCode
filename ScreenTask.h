@@ -2,6 +2,7 @@
 
 #include "SPI.h"
 #include "TFT_eSPI.h"
+// #include "Lib/Fontslib.h"
 
 #define PowerMode(x)  digitalWrite(TFT_BL, x)
 
@@ -11,12 +12,11 @@ class ScreenTask{
 
 public:
 
-ScreenTask(){
-
-}
+ScreenTask(){}
 
 void IntScreen();
 void WelcomeMessage();
+void DrawDefaultScreen();
 
 private:
 TFT_eSPI tft = TFT_eSPI();
