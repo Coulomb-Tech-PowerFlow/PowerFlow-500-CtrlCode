@@ -4,18 +4,20 @@
 using namespace ScreenCtrl;
 
 void ScreenTask::IntScreen(){
-  tft.init();
-  tft.setRotation(1);
-  tft.fillScreen(TFT_BLACK);
+    tft.init();
+    tft.setRotation(1);
+    tft.fillScreen(TFT_BLACK);
 }
 
 void ScreenTask::WelcomeMessage(){
 
-    // tft.setCursor(100, 110); 78 80 99
-    // tft.setTextColor(TFT_WHITE);  tft.setTextSize(2);
-tft.drawBitmap(10, 90, plogo, 60, 52, TFT_SPECIAL);
-tft.drawBitmap(75, 90, flowlogo, 235, 99, TFT_LIGHTGREY);
-// delay(1500);
-// PowerMode(0);
-// tft.fillScreen(TFT_BLACK);
+    tft.setTextColor(TFT_WHITE);  tft.setTextSize(3);
+    tft.setCursor(130, 115);
+    tft.drawBitmap(80, 95, plogo, 50, 43, TFT_SPECIAL);
+    tft.print("OWER");
+    tft.setCursor(190, 140);
+    tft.print("FLOW");
+    // delay(1500);
+    // PowerMode(0);
+    // tft.fillScreen(TFT_BLACK);
 }
