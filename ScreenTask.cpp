@@ -1,4 +1,4 @@
-#include "ScreenTask.h"
+#include "ScreenTask.hpp"
 #include "customImages.h"
 
 using namespace ScreenCtrl;
@@ -30,15 +30,28 @@ void ScreenTask::DrawDefaultScreen(){
     tft.fillRoundRect(110 ,80,100,150, 20, tft.color565(60,60,60));
     tft.fillRoundRect(115 ,85,90,140, 20, TFT_WHITE	);
 
-    tft.drawBitmap(265,40, socket_bmp, 40, 40, Green);
-    // tft.drawRoundRect(255, 30, 60,83, 20,Green); //load
-    tft.setCursor(265, 85); tft.setTextColor(Green); tft.setTextSize(2);
+    tft.drawBitmap(265,40, socket_bmp, 40, 40, TFT_WHITE);
+    tft.drawRoundRect(255, 30, 60,83, 20,TFT_WHITE); //load
+    tft.setCursor(265, 85); tft.setTextColor(TFT_WHITE); tft.setTextSize(2);
     tft.print("0W");
     
-    tft.drawBitmap(15,40, adapter_bmp, 40, 40, TFT_WHITE);
-    // tft.drawRoundRect(5, 30, 60,83, 20, TFT_WHITE); //smps
-    tft.setCursor(15, 85); tft.setTextColor(TFT_WHITE);  tft.setTextSize(2);
+    tft.drawBitmap(15,40, adapter_bmp, 40, 40, Green);
+    tft.drawRoundRect(5, 30, 60,83, 20, Green); //smps
+    tft.setCursor(15, 85); tft.setTextColor(Green);  tft.setTextSize(2);
     tft.print("0W");
 
+    //12 11 10 9
+
+}
+
+void ScreenTask::fillBat(){
+
+    #define Green tft.color565(46,204,113)
+
+    tft.fillRoundRect(120 ,97,80,23,7,Green); //100%
+	tft.fillRoundRect(120 ,122,80,23,7,Green); //80%
+	tft.fillRoundRect(120 ,147,80,23,7,Green);//60%
+	tft.fillRoundRect(120 ,172,80,23,7,Green);//40%
+	tft.fillRoundRect(120 ,197,80,23,7,Green);//20%
 
 }
