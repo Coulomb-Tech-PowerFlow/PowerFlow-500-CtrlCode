@@ -4,7 +4,7 @@ using namespace ScreenCtrl;
 
 void SystemMeasurementTask::ChargingStatus(){
 
-    if(this->SmpsPwr>=10){
+    if(this->ChargePwr>=10){
         if(this->screenState == SystemState::None)
             this->defaultLoad = true;
         this->charge = true;

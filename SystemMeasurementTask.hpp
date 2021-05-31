@@ -28,7 +28,7 @@ public:
     ~SystemMeasurementTask(){};
 
     int LoadPwr{0},
-        SmpsPwr{0};
+        ChargePwr{0};
 
     float LoadCurrent{0},
         SmpsCurrent{0},

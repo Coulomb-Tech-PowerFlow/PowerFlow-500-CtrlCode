@@ -31,18 +31,55 @@ void ScreenTask::DrawDefaultScreen(){
     tft.fillRoundRect(115 ,85,90,140, 20, TFT_WHITE	);
 
     tft.drawBitmap(265,40, socket_bmp, 40, 40, TFT_WHITE);
-    tft.drawRoundRect(255, 30, 60,83, 20,TFT_WHITE); //load
     tft.setCursor(265, 85); tft.setTextColor(TFT_WHITE); tft.setTextSize(2);
     tft.print("0W");
     
     tft.drawBitmap(15,40, adapter_bmp, 40, 40, Green);
-    tft.drawRoundRect(5, 30, 60,83, 20, Green); //smps
     tft.setCursor(15, 85); tft.setTextColor(Green);  tft.setTextSize(2);
     tft.print("0W");
 
     //12 11 10 9
-
 }
+
+void ScreenTask::PowerflowGraph(){
+
+    if(true){
+
+        if((millis()-this->LoadAnimatetimer) >= 500){
+            this->loadAnimate = !loadAnimate;
+            if(loadAnimate)
+			    tft.drawRoundRect(255, 30, 60,83, 20,TFT_WHITE); //load
+		    else 
+		        tft.drawRoundRect(255, 30, 60,83, 20, TFT_BLACK);
+            this->LoadAnimatetimer = millis();
+        }//
+    }//
+    else{ 
+	    tft.drawRoundRect(255, 30, 60,83, 20, TFT_BLACK);
+        this->LoadAnimatetimer = millis();
+    }
+    
+    if(this->SysMeasurements.ChargePwr>=5){
+
+        if((millis()-this->ChargeAnimatetimer) >= 500){
+            this->ChargeAnimate = !this->ChargeAnimate;
+            if(this->ChargeAnimate)
+		        tft.drawRoundRect(5, 30, 60,83, 20, Green); //smps
+		    else 
+		        tft.drawRoundRect(5, 30, 60,83, 20, TFT_BLACK);
+            this->ChargeAnimatetimer = millis();
+        } // 
+    }//
+    else{ 
+	    tft.drawRoundRect(5, 30, 60,83, 20, TFT_BLACK);
+        this->ChargeAnimatetimer = millis();
+    }
+
+}//
+
+void ScreenTask::OperationalTask(){
+    this->PowerflowGraph();
+}//
 
 void ScreenTask::fillBat(){
 
@@ -53,5 +90,4 @@ void ScreenTask::fillBat(){
 	tft.fillRoundRect(120 ,147,80,23,7,Green);//60%
 	tft.fillRoundRect(120 ,172,80,23,7,Green);//40%
 	tft.fillRoundRect(120 ,197,80,23,7,Green);//20%
-
 }
