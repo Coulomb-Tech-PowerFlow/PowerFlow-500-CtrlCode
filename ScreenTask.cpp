@@ -7,6 +7,7 @@ void ScreenTask::IntScreen(){
     tft.init();
     tft.fillScreen(TFT_BLACK);
     tft.setRotation(1);
+    tft.setTextFont(1);
 }
 
 void ScreenTask::WelcomeMessage(){
@@ -44,7 +45,7 @@ void ScreenTask::DrawDefaultScreen(){
 void ScreenTask::PowerflowGraph(){
 
     if(true){
-
+        DrawLoadLine(TFT_WHITE);
         if((millis()-this->LoadAnimatetimer) >= 500){
             this->loadAnimate = !loadAnimate;
             if(loadAnimate)
@@ -54,9 +55,11 @@ void ScreenTask::PowerflowGraph(){
             this->LoadAnimatetimer = millis();
         }//
     }//
+
     else{ 
 	    tft.drawRoundRect(255, 30, 60,83, 20, TFT_BLACK);
         this->LoadAnimatetimer = millis();
+        DrawLoadLine(TFT_BLACK);
     }
     
     if(this->SysMeasurements.ChargePwr>=5){
@@ -75,7 +78,21 @@ void ScreenTask::PowerflowGraph(){
         this->ChargeAnimatetimer = millis();
     }
 
+
 }//
+
+void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color){
+    
+    tft.drawFastVLine(285,112,30,color);
+    tft.drawFastHLine(210,148,70,color);
+    tft.drawPixel(285, 142, color);
+    tft.drawPixel(284, 143, color);
+    tft.drawPixel(283, 144, color);
+    tft.drawPixel(282, 145, color);
+    tft.drawPixel(281, 146, color);
+    tft.drawPixel(280, 147, color);
+    tft.drawPixel(279, 148, color);
+}
 
 void ScreenTask::OperationalTask(){
     this->PowerflowGraph();

@@ -25,6 +25,7 @@ private:
     TFT_eSPI tft = TFT_eSPI();
     void fillBat();
     void PowerflowGraph();
+    void DrawLoadLine(decltype(TFT_WHITE));
     SystemMeasurementTask SysMeasurements;
 
     unsigned long LoadAnimatetimer{0},
