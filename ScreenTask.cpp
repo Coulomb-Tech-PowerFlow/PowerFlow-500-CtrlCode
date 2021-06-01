@@ -39,19 +39,25 @@ void ScreenTask::DrawDefaultScreen(){
     tft.setCursor(15, 85); tft.setTextColor(Green);  tft.setTextSize(2);
     tft.print("0W");
 
+    this->fillBat();//test
+
     //12 11 10 9
 }
 
 void ScreenTask::PowerflowGraph(){
 
-    if(true){
-        DrawLoadLine(TFT_WHITE);
+    if(this->SysMeasurements.LoadPwr>=5 || true){
+
+        this->DrawLoadLine(TFT_WHITE);
+
         if((millis()-this->LoadAnimatetimer) >= 500){
-            this->loadAnimate = !loadAnimate;
-            if(loadAnimate)
+            this->loadAnimate = !this->loadAnimate;
+            if(this->loadAnimate){
 			    tft.drawRoundRect(255, 30, 60,83, 20,TFT_WHITE); //load
-		    else 
-		        tft.drawRoundRect(255, 30, 60,83, 20, TFT_BLACK);
+            }
+		    else{
+                tft.drawRoundRect(255, 30, 60,83, 20, TFT_BLACK);
+            } 
             this->LoadAnimatetimer = millis();
         }//
     }//
@@ -59,10 +65,12 @@ void ScreenTask::PowerflowGraph(){
     else{ 
 	    tft.drawRoundRect(255, 30, 60,83, 20, TFT_BLACK);
         this->LoadAnimatetimer = millis();
-        DrawLoadLine(TFT_BLACK);
+        this->DrawLoadLine(TFT_BLACK);
     }
     
-    if(this->SysMeasurements.ChargePwr>=5){
+    if(this->SysMeasurements.ChargePwr>=5 || true){
+
+        this->DrawChargeLine(tft.color565(46,204,113));
 
         if((millis()-this->ChargeAnimatetimer) >= 500){
             this->ChargeAnimate = !this->ChargeAnimate;
@@ -76,13 +84,12 @@ void ScreenTask::PowerflowGraph(){
     else{ 
 	    tft.drawRoundRect(5, 30, 60,83, 20, TFT_BLACK);
         this->ChargeAnimatetimer = millis();
+        this->DrawChargeLine(TFT_BLACK);
     }
-
-
 }//
 
 void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color){
-    
+
     tft.drawFastVLine(285,112,30,color);
     tft.drawFastHLine(210,148,70,color);
     tft.drawPixel(285, 142, color);
@@ -92,14 +99,57 @@ void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color){
     tft.drawPixel(281, 146, color);
     tft.drawPixel(280, 147, color);
     tft.drawPixel(279, 148, color);
+
+    if(color!=TFT_BLACK){
+
+        if((millis()-this->LoadArrowTimer) >= 50){
+
+            if(PrevLoadarrowPosx0!=-1){
+                tft.drawLine(PrevLoadarrowPosx0,148,PrevLoadarrowPosx1, 142, TFT_BLACK);
+                tft.drawLine(PrevLoadarrowPosx0,148,PrevLoadarrowPosx1, 154, TFT_BLACK);
+            }
+            tft.drawLine(LoadarrowPosx0,148,LoadarrowPosx1, 142, TFT_WHITE);
+            tft.drawLine(LoadarrowPosx0,148,LoadarrowPosx1, 154, TFT_WHITE);
+            PrevLoadarrowPosx0 = LoadarrowPosx0;
+            PrevLoadarrowPosx1 = LoadarrowPosx1;
+            LoadarrowPosx0 += 1;
+            LoadarrowPosx1 += 1;
+            if(LoadarrowPosx0 == 280){
+                LoadarrowPosx0 = 230;   
+                LoadarrowPosx1 = 220;
+            }
+            this->LoadArrowTimer = millis();
+        }//
+    }//
+    else {
+        PrevLoadarrowPosx0 = PrevLoadarrowPosx1 = -1;
+        LoadarrowPosx0 = 230;
+        LoadarrowPosx1 = 220;
+    }
 }
+
+void ScreenTask::DrawChargeLine(decltype(TFT_GREEN) color){
+
+    tft.drawFastVLine(35,112,30,color);
+    tft.drawFastHLine(41,148,70,color);
+    tft.drawPixel(35, 142, color);
+    tft.drawPixel(36, 143, color);
+    tft.drawPixel(37, 144, color);
+    tft.drawPixel(38, 145, color);
+    tft.drawPixel(39, 146, color);
+    tft.drawPixel(40, 147, color);
+    tft.drawPixel(41, 148, color);
+
+    // tft.drawLine(215,148,225, 142, TFT_WHITE);
+    // tft.drawLine(215,148,225, 154, TFT_WHITE);
+}
+
 
 void ScreenTask::OperationalTask(){
     this->PowerflowGraph();
 }//
 
 void ScreenTask::fillBat(){
-
     #define Green tft.color565(46,204,113)
 
     tft.fillRoundRect(120 ,97,80,23,7,Green); //100%
