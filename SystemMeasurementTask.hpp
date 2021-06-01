@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ScreenCtrl{
+namespace ScreenCtrl {
 
 #define SampleBat PA8
 #define SampleInventerTemp PA11
@@ -14,36 +14,36 @@ namespace ScreenCtrl{
 #define InverterFanCtrl PB1
 
 enum class SystemState {
-    None,
-    Normal,
-    Charging,
-    Overload,
-    BatteryLow
+  None,
+  Normal,
+  Charging,
+  Overload,
+  BatteryLow
 };
 
-class SystemMeasurementTask{
+class SystemMeasurementTask {
 
-public:
-    SystemMeasurementTask(){};
-    ~SystemMeasurementTask(){};
+  public:
+    SystemMeasurementTask() {};
+    ~SystemMeasurementTask() {};
 
     int LoadPwr{0},
         ChargePwr{0};
 
     float LoadCurrent{0},
-        SmpsCurrent{0},
-        BatteryVoltage{0};
+          SmpsCurrent{0},
+          BatteryVoltage{0};
 
     bool flashUpdate{false},
-        defaultLoad{true},
-        falseShutdown{true},
-        charge{false};
+         defaultLoad{true},
+         falseShutdown{true},
+         charge{false};
 
     SystemState screenState{SystemState::None};
-    
-void ChargingStatus();
 
-private:
+    void ChargingStatus();
+
+  private:
 };
 
 } // end of namespaces
