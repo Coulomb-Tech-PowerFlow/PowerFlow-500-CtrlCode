@@ -10,6 +10,22 @@
 
 namespace ScreenCtrl{
 
+struct ArrowposDat
+{
+    int arrowPosx0{218},
+        PrevarrowPosx0{-1},
+        arrowPosx1{218},
+        PrevarrowPosx1{-1},
+        ArrowPosXOrigins{224},
+        PrevArrowPosXOrigins{-1},
+        ArrowPosYOrigins{148},
+        PrevArrowPosYOrigins{-1},
+        arrowPosy0{142},
+        PrevarrowPosy0{-1},
+        arrowPosy1{154},
+        PrevarrowPosy1{-1};
+};
+
 class ScreenTask{
 
 public:
@@ -34,14 +50,14 @@ private:
         LoadArrowTimer{0};
 
     int PrevLoad{-1},
-        prevCharge{-1},
-        LoadarrowPosx0{230},
-        PrevLoadarrowPosx0{-1},
-        LoadarrowPosx1{220},
-        PrevLoadarrowPosx1{-1};
+        prevCharge{-1};
 
-    bool loadAnimate{false}, 
-        ChargeAnimate{false};
+    ArrowposDat LoadArrowPos;
+    ArrowposDat ChargeArrowPos;
+
+    bool loadAnimate{false},
+        ChargeAnimate{false},
+        LoadarrowSwitch{false};
 };
 
 }//end of namespace

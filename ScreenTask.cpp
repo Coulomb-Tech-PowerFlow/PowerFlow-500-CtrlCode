@@ -102,29 +102,81 @@ void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color){
 
     if(color!=TFT_BLACK){
 
-        if((millis()-this->LoadArrowTimer) >= 50){
+        if((millis()-this->LoadArrowTimer) >= 40){
 
-            if(PrevLoadarrowPosx0!=-1){
-                tft.drawLine(PrevLoadarrowPosx0,148,PrevLoadarrowPosx1, 142, TFT_BLACK);
-                tft.drawLine(PrevLoadarrowPosx0,148,PrevLoadarrowPosx1, 154, TFT_BLACK);
+            if(LoadArrowPos.PrevArrowPosXOrigins!=-1 && !this->LoadarrowSwitch){
+                tft.drawLine(LoadArrowPos.PrevArrowPosXOrigins,LoadArrowPos.ArrowPosYOrigins,LoadArrowPos.PrevarrowPosx0, LoadArrowPos.arrowPosy0, TFT_BLACK);
+                tft.drawLine(LoadArrowPos.PrevArrowPosXOrigins,LoadArrowPos.ArrowPosYOrigins,LoadArrowPos.PrevarrowPosx1, LoadArrowPos.arrowPosy1, TFT_BLACK);
             }
-            tft.drawLine(LoadarrowPosx0,148,LoadarrowPosx1, 142, TFT_WHITE);
-            tft.drawLine(LoadarrowPosx0,148,LoadarrowPosx1, 154, TFT_WHITE);
-            PrevLoadarrowPosx0 = LoadarrowPosx0;
-            PrevLoadarrowPosx1 = LoadarrowPosx1;
-            LoadarrowPosx0 += 1;
-            LoadarrowPosx1 += 1;
-            if(LoadarrowPosx0 == 280){
-                LoadarrowPosx0 = 230;   
-                LoadarrowPosx1 = 220;
+            else if(this->LoadarrowSwitch){
+                tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.PrevArrowPosYOrigins,LoadArrowPos.arrowPosx0, LoadArrowPos.PrevarrowPosy0, TFT_BLACK);
+                tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.PrevArrowPosYOrigins,LoadArrowPos.arrowPosx1, LoadArrowPos.PrevarrowPosy1, TFT_BLACK);
             }
+
+            tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.ArrowPosYOrigins,LoadArrowPos.arrowPosx0, LoadArrowPos.arrowPosy0, TFT_WHITE);
+            tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.ArrowPosYOrigins,LoadArrowPos.arrowPosx1, LoadArrowPos.arrowPosy1, TFT_WHITE);
+            LoadArrowPos.PrevarrowPosx0 = LoadArrowPos.arrowPosx0;
+            LoadArrowPos.PrevarrowPosx1 = LoadArrowPos.arrowPosx1;
+            LoadArrowPos.PrevArrowPosXOrigins = LoadArrowPos.ArrowPosXOrigins;
+
+            if(LoadArrowPos.ArrowPosXOrigins == 280){
+
+                this->LoadarrowSwitch = true;
+                tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.ArrowPosYOrigins,LoadArrowPos.arrowPosx0, LoadArrowPos.arrowPosy0, TFT_BLACK);
+                tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.ArrowPosYOrigins,LoadArrowPos.arrowPosx1, LoadArrowPos.arrowPosy1, TFT_BLACK);
+
+                LoadArrowPos.ArrowPosXOrigins = 285;
+                LoadArrowPos.arrowPosx0 = 279;
+                LoadArrowPos.arrowPosx1 = 291;
+                LoadArrowPos.ArrowPosYOrigins = 136;
+                LoadArrowPos.arrowPosy0 = 142;
+                LoadArrowPos.arrowPosy1 = 142;
+            }
+            if(!this->LoadarrowSwitch){
+                LoadArrowPos.ArrowPosXOrigins += 1;
+                LoadArrowPos.arrowPosx0 += 1;
+                LoadArrowPos.arrowPosx1 += 1;
+            }
+
+            if(this->LoadarrowSwitch && LoadArrowPos.ArrowPosXOrigins!=285){
+                
+            }
+
+            if(this->LoadarrowSwitch){
+                LoadArrowPos.PrevArrowPosYOrigins = LoadArrowPos.ArrowPosYOrigins;
+                LoadArrowPos.PrevarrowPosy0 = LoadArrowPos.arrowPosy0;
+                LoadArrowPos.PrevarrowPosy1 = LoadArrowPos.arrowPosy1;
+                LoadArrowPos.ArrowPosYOrigins -= 1;
+                LoadArrowPos.arrowPosy0 -= 1;
+                LoadArrowPos.arrowPosy1 -= 1;
+
+                if(LoadArrowPos.ArrowPosYOrigins < 112){
+
+                    tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.PrevArrowPosYOrigins,LoadArrowPos.arrowPosx0, LoadArrowPos.PrevarrowPosy0, TFT_BLACK);
+                    tft.drawLine(LoadArrowPos.ArrowPosXOrigins,LoadArrowPos.PrevArrowPosYOrigins,LoadArrowPos.arrowPosx1, LoadArrowPos.PrevarrowPosy1, TFT_BLACK);
+                    this->LoadarrowSwitch = false;
+                    LoadArrowPos.ArrowPosXOrigins = 224;
+                    LoadArrowPos.arrowPosx0 = 218;
+                    LoadArrowPos.arrowPosx1 = 218;
+                    LoadArrowPos.ArrowPosYOrigins = 148;
+                    LoadArrowPos.arrowPosy0 = 142;
+                    LoadArrowPos.arrowPosy1 = 154;
+                }
+            }
+
             this->LoadArrowTimer = millis();
         }//
     }//
     else {
-        PrevLoadarrowPosx0 = PrevLoadarrowPosx1 = -1;
-        LoadarrowPosx0 = 230;
-        LoadarrowPosx1 = 220;
+        LoadArrowPos.PrevarrowPosx0 = LoadArrowPos.PrevarrowPosx1 = LoadArrowPos.PrevArrowPosXOrigins =
+            LoadArrowPos.PrevarrowPosy0 = LoadArrowPos.PrevarrowPosy1 = LoadArrowPos.PrevArrowPosYOrigins = -1;
+        LoadArrowPos.ArrowPosXOrigins = 224;
+        LoadArrowPos.arrowPosx0 = 218;
+        LoadArrowPos.arrowPosx1 = 218;
+        LoadArrowPos.ArrowPosYOrigins = 148;
+        LoadArrowPos.arrowPosy0 = 142;
+        LoadArrowPos.arrowPosy1 = 154;
+        this->LoadarrowSwitch = false;
     }
 }
 
@@ -151,7 +203,6 @@ void ScreenTask::OperationalTask(){
 
 void ScreenTask::fillBat(){
     #define Green tft.color565(46,204,113)
-
     tft.fillRoundRect(120 ,97,80,23,7,Green); //100%
 	tft.fillRoundRect(120 ,122,80,23,7,Green); //80%
 	tft.fillRoundRect(120 ,147,80,23,7,Green);//60%
