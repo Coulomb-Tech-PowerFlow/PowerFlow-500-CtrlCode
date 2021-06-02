@@ -28,7 +28,8 @@ class SystemMeasurementTask {
     ~SystemMeasurementTask() {};
 
     int LoadPwr{0},
-        ChargePwr{0};
+        ChargePwr{0},
+        BatteryPercentage{57}; // TEST
 
     float LoadCurrent{0},
           SmpsCurrent{0},
@@ -39,7 +40,7 @@ class SystemMeasurementTask {
          falseShutdown{true},
          charge{false};
 
-    SystemState screenState{SystemState::None};
+    SystemState screenState{SystemState::Normal}; //TEST
 
     void ChargingStatus();
 

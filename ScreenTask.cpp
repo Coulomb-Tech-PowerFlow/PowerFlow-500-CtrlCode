@@ -1,4 +1,4 @@
-#include "ScreenTask.hpp"
+#include "ScreenTask.h"
 #include "customImages.h"
 
 using namespace ScreenCtrl;
@@ -12,11 +12,13 @@ void ScreenTask::IntScreen() {
 
 void ScreenTask::WelcomeMessage() {
 
-  tft.setTextColor(TFT_WHITE);  tft.setTextSize(3);
+#define White tft.color565(252,252,252)
+
+  tft.setTextColor(White);  tft.setTextSize(3);
   tft.setCursor(130, 115);
   tft.drawBitmap(80, 95, plogo_bmp, 50, 43, TFT_SPECIAL);
   tft.print("OWER");
-  tft.setCursor(190, 140);
+  tft.setCursor(190, 140);  
   tft.print("FLOW");
   delay(1500);
   // PowerMode(0);
@@ -25,35 +27,32 @@ void ScreenTask::WelcomeMessage() {
 
 void ScreenTask::DrawDefaultScreen() {
 
-#define Green tft.color565(46,204,113)
+#define Green tft.color565(46,170,113)
 
   tft.fillRoundRect(139, 69, 40, 10, 0, tft.color565(60, 60, 60)); //head 60 60 60 darkgrey
   tft.fillRoundRect(110 , 80, 100, 150, 20, tft.color565(60, 60, 60));
-  tft.fillRoundRect(115 , 85, 90, 140, 20, TFT_WHITE);
+  tft.fillRoundRect(115 , 85, 90, 140, 20, White);
 
-  tft.drawBitmap(265, 40, socket_bmp, 40, 40, TFT_WHITE);
-  tft.setCursor(265, 85); tft.setTextColor(TFT_WHITE); tft.setTextSize(2);
+  tft.drawBitmap(265, 40, socket_bmp, 40, 40, White);
+  tft.setCursor(265, 85); tft.setTextColor(White); tft.setTextSize(2);
   tft.print("0W");
 
   tft.drawBitmap(15, 40, adapter_bmp, 40, 40, Green);
   tft.setCursor(15, 85); tft.setTextColor(Green);  tft.setTextSize(2);
   tft.print("0W");
 
-  this->fillBat();//test
-
-  //12 11 10 9
 }
 
 void ScreenTask::PowerflowGraph() {
 
   if (this->SysMeasurements.LoadPwr >= 5) {
 
-    this->DrawLoadLine(TFT_WHITE);
+    this->DrawLoadLine(White);
 
     if ((millis() - this->LoadAnimatetimer) >= 500) {
       this->loadAnimate = !this->loadAnimate;
       if (this->loadAnimate)
-        tft.drawRoundRect(255, 30, 60, 83, 20, TFT_WHITE); //load
+        tft.drawRoundRect(255, 30, 60, 83, 20, White); //load
       else
         tft.drawRoundRect(255, 30, 60, 83, 20, TFT_BLACK);
       this->LoadAnimatetimer = millis();
@@ -68,7 +67,7 @@ void ScreenTask::PowerflowGraph() {
 
   if (this->SysMeasurements.ChargePwr >= 5 || true) {
 
-    this->DrawChargeLine(tft.color565(46, 204, 113));
+    this->DrawChargeLine(Green);
 
     if ((millis() - this->ChargeAnimatetimer) >= 500) {
       this->ChargeAnimate = !this->ChargeAnimate;
@@ -159,7 +158,6 @@ void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color) {
           LoadArrowPos.arrowPosy1 = 154;
         }
       }
-
       this->LoadArrowTimer = millis();
     }//
   }//
@@ -250,23 +248,80 @@ void ScreenTask::DrawChargeLine(decltype(TFT_GREEN) color) {
           ChargeArrowPos.arrowPosy1 = 118;
         }
       }
-
       this->ChargeArrowTimer = millis();
     }//
   }//
-
 }//
 
+void ScreenTask::BatteryModeTask(){
+
+    if(this->SysMeasurements.screenState == SystemState::Normal){
+
+        this->BatNormBit.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
+		this->BatNormBit.bit2 = (this->SysMeasurements.BatteryPercentage >= 56 && this->SysMeasurements.BatteryPercentage <= 75) ? true : false;
+		this->BatNormBit.bit3 = (this->SysMeasurements.BatteryPercentage >= 36 && this->SysMeasurements.BatteryPercentage <= 55) ? true : false;
+		this->BatNormBit.bit4 = (this->SysMeasurements.BatteryPercentage >= 16 && this->SysMeasurements.BatteryPercentage <= 35) ? true : false;
+		this->BatNormBit.bit5 = (this->SysMeasurements.BatteryPercentage >= 1 && this->SysMeasurements.BatteryPercentage <= 15) ? true : false;
+
+        if(this->BatNormBit.bit1 && this->BatNormPrevState!=PrevStateBits::bit1_state){
+            this->BatNormPrevState = PrevStateBits::bit1_state;
+            this->FillBat(White,true);
+            this->BatteryBits.Flags = 0x1f;
+            this->FillBat(Green);
+        }//
+
+        else if(this->BatNormBit.bit2 && this->BatNormPrevState!=PrevStateBits::bit2_state){
+            this->BatNormPrevState = PrevStateBits::bit2_state;
+            this->FillBat(White,true);
+            this->BatteryBits.Flags = 0x1E;
+            this->FillBat(Green);
+        }
+
+        else if(this->BatNormBit.bit3 && this->BatNormPrevState!=PrevStateBits::bit3_state){
+            this->BatNormPrevState = PrevStateBits::bit3_state;
+            this->FillBat(White,true);
+            this->BatteryBits.Flags = 0x1C;
+            this->FillBat(Green);
+        }
+
+        else if(this->BatNormBit.bit4 && this->BatNormPrevState!=PrevStateBits::bit4_state){
+            this->BatNormPrevState = PrevStateBits::bit4_state;
+            this->FillBat(White,true);
+            this->BatteryBits.Flags = 0x18;
+            this->FillBat(Green);
+        }
+
+         else if(this->BatNormBit.bit5 && this->BatNormPrevState!=PrevStateBits::bit5_state){
+            this->BatNormPrevState = PrevStateBits::bit5_state;
+            this->FillBat(White,true);
+            this->BatteryBits.Flags = 0x10;
+            this->FillBat(TFT_RED);
+        }
+
+    }//Normal State
+}
 
 void ScreenTask::OperationalTask() {
-  this->PowerflowGraph();
+    this->PowerflowGraph();
+    this->BatteryModeTask();
 }//
 
-void ScreenTask::fillBat() {
-#define Green tft.color565(46,204,113)
-  tft.fillRoundRect(120 , 97, 80, 23, 7, Green); //100%
-  tft.fillRoundRect(120 , 122, 80, 23, 7, Green); //80%
-  tft.fillRoundRect(120 , 147, 80, 23, 7, Green); //60%
-  tft.fillRoundRect(120 , 172, 80, 23, 7, Green); //40%
-  tft.fillRoundRect(120 , 197, 80, 23, 7, Green); //20%
-}
+void ScreenTask::FillBat(decltype(TFT_GREEN) color, bool Override) {
+
+    if(BatteryBits.States.bit1 || Override)
+        tft.fillRoundRect(120 ,97, 80, 23, 7, color); //100%
+
+    if(BatteryBits.States.bit1|| BatteryBits.States.bit2 || Override)
+        tft.fillRoundRect(120 ,122,80, 23, 7,color); //80%
+
+    if(BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3 || Override)
+        tft.fillRoundRect(120 ,147,80, 23, 7,color); //60%
+    
+    if(BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3||
+        BatteryBits.States.bit4 || Override)
+        tft.fillRoundRect(120 ,172,80, 23, 7,color); //40%
+    
+    if(BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3||
+        BatteryBits.States.bit4 ||BatteryBits.States.bit5 || Override) 
+        tft.fillRoundRect(120 ,197,80, 23, 7,color); //20%
+}//
