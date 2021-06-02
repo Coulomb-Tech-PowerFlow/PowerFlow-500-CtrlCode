@@ -1,40 +1,40 @@
 #pragma once
 
-namespace ScreenCtrl{
+namespace ScreenCtrl {
 
-union BatSegFields{
-  
-  struct{
+union BatSegFields {
+
+  struct {
     uint8_t bit1 : 1;
     uint8_t bit2 : 1;
     uint8_t bit3 : 1;
     uint8_t bit4 : 1;
     uint8_t bit5 : 1;
-  }States;
+  } States;
 
   uint8_t Flags;
 };
 
-  enum class PrevStateBits
-  {
-    clear_state,
-    bit1_state,
-    bit2_state,
-    bit3_state,
-    bit4_state,
-    bit5_state,
-    bit6_state,
-    Empty
-  };
+enum class PrevStateBits
+{
+  clear_state,
+  bit1_state,
+  bit2_state,
+  bit3_state,
+  bit4_state,
+  bit5_state,
+  bit6_state,
+  Empty
+};
 
-  struct StateBits
-  {
-    bool bit1{false},
-        bit2{false},
-        bit3{false},
-        bit4{false},
-        bit5{false};
-    };
+struct StateBits
+{
+  bool bit1{false},
+       bit2{false},
+       bit3{false},
+       bit4{false},
+       bit5{false};
+};
 
 struct ArrowposDat {
 

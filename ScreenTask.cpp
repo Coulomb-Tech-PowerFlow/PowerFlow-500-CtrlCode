@@ -18,7 +18,7 @@ void ScreenTask::WelcomeMessage() {
   tft.setCursor(130, 115);
   tft.drawBitmap(80, 95, plogo_bmp, 50, 43, TFT_SPECIAL);
   tft.print("OWER");
-  tft.setCursor(190, 140);  
+  tft.setCursor(190, 140);
   tft.print("FLOW");
   delay(1500);
   // PowerMode(0);
@@ -65,12 +65,13 @@ void ScreenTask::PowerflowGraph() {
     this->DrawLoadLine(TFT_BLACK);
   }
 
-  if (this->SysMeasurements.ChargePwr >= 5 || true) {
+  if (this->SysMeasurements.ChargePwr >= 5 || true ) {
 
     this->DrawChargeLine(Green);
 
     if ((millis() - this->ChargeAnimatetimer) >= 500) {
       this->ChargeAnimate = !this->ChargeAnimate;
+      this->BatChargeTask();
       if (this->ChargeAnimate)
         tft.drawRoundRect(5, 30, 60, 83, 20, Green); //smps
       else
@@ -253,75 +254,168 @@ void ScreenTask::DrawChargeLine(decltype(TFT_GREEN) color) {
   }//
 }//
 
-void ScreenTask::BatteryModeTask(){
+void ScreenTask::BatteryModeTask() {
 
-    if(this->SysMeasurements.screenState == SystemState::Normal){
+  if (this->SysMeasurements.screenState == SystemState::Normal) {
 
-        this->BatNormBit.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
-		this->BatNormBit.bit2 = (this->SysMeasurements.BatteryPercentage >= 56 && this->SysMeasurements.BatteryPercentage <= 75) ? true : false;
-		this->BatNormBit.bit3 = (this->SysMeasurements.BatteryPercentage >= 36 && this->SysMeasurements.BatteryPercentage <= 55) ? true : false;
-		this->BatNormBit.bit4 = (this->SysMeasurements.BatteryPercentage >= 16 && this->SysMeasurements.BatteryPercentage <= 35) ? true : false;
-		this->BatNormBit.bit5 = (this->SysMeasurements.BatteryPercentage >= 1 && this->SysMeasurements.BatteryPercentage <= 15) ? true : false;
+    this->BatNormBit.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
+    this->BatNormBit.bit2 = (this->SysMeasurements.BatteryPercentage >= 56 && this->SysMeasurements.BatteryPercentage <= 75) ? true : false;
+    this->BatNormBit.bit3 = (this->SysMeasurements.BatteryPercentage >= 36 && this->SysMeasurements.BatteryPercentage <= 55) ? true : false;
+    this->BatNormBit.bit4 = (this->SysMeasurements.BatteryPercentage >= 16 && this->SysMeasurements.BatteryPercentage <= 35) ? true : false;
+    this->BatNormBit.bit5 = (this->SysMeasurements.BatteryPercentage >= 1 && this->SysMeasurements.BatteryPercentage <= 15) ? true : false;
 
-        if(this->BatNormBit.bit1 && this->BatNormPrevState!=PrevStateBits::bit1_state){
-            this->BatNormPrevState = PrevStateBits::bit1_state;
-            this->FillBat(White,true);
-            this->BatteryBits.Flags = 0x1f;
-            this->FillBat(Green);
-        }//
+    if (this->BatNormBit.bit1 && this->BatNormPrevState != PrevStateBits::bit1_state) {
+      this->BatNormPrevState = PrevStateBits::bit1_state;
+      this->FillBat(White, true);
+      this->BatteryBits.Flags = 0x1f;
+      this->FillBat(Green);
+    }//
 
-        else if(this->BatNormBit.bit2 && this->BatNormPrevState!=PrevStateBits::bit2_state){
-            this->BatNormPrevState = PrevStateBits::bit2_state;
-            this->FillBat(White,true);
-            this->BatteryBits.Flags = 0x1E;
-            this->FillBat(Green);
-        }
+    else if (this->BatNormBit.bit2 && this->BatNormPrevState != PrevStateBits::bit2_state) {
+      this->BatNormPrevState = PrevStateBits::bit2_state;
+      this->FillBat(White, true);
+      this->BatteryBits.Flags = 0x1E;
+      this->FillBat(Green);
+    }
 
-        else if(this->BatNormBit.bit3 && this->BatNormPrevState!=PrevStateBits::bit3_state){
-            this->BatNormPrevState = PrevStateBits::bit3_state;
-            this->FillBat(White,true);
-            this->BatteryBits.Flags = 0x1C;
-            this->FillBat(Green);
-        }
+    else if (this->BatNormBit.bit3 && this->BatNormPrevState != PrevStateBits::bit3_state) {
+      this->BatNormPrevState = PrevStateBits::bit3_state;
+      this->FillBat(White, true);
+      this->BatteryBits.Flags = 0x1C;
+      this->FillBat(Green);
+    }
 
-        else if(this->BatNormBit.bit4 && this->BatNormPrevState!=PrevStateBits::bit4_state){
-            this->BatNormPrevState = PrevStateBits::bit4_state;
-            this->FillBat(White,true);
-            this->BatteryBits.Flags = 0x18;
-            this->FillBat(Green);
-        }
+    else if (this->BatNormBit.bit4 && this->BatNormPrevState != PrevStateBits::bit4_state) {
+      this->BatNormPrevState = PrevStateBits::bit4_state;
+      this->FillBat(White, true);
+      this->BatteryBits.Flags = 0x18;
+      this->FillBat(Green);
+    }
 
-         else if(this->BatNormBit.bit5 && this->BatNormPrevState!=PrevStateBits::bit5_state){
-            this->BatNormPrevState = PrevStateBits::bit5_state;
-            this->FillBat(White,true);
-            this->BatteryBits.Flags = 0x10;
-            this->FillBat(TFT_RED);
-        }
+    else if (this->BatNormBit.bit5 && this->BatNormPrevState != PrevStateBits::bit5_state) {
+      this->BatNormPrevState = PrevStateBits::bit5_state;
+      this->FillBat(White, true);
+      this->BatteryBits.Flags = 0x10;
+      this->FillBat(tft.color565(180, 0, 0));
+    }
 
-    }//Normal State
-}
+  }//Normal-State
+
+  if (this->SysMeasurements.screenState != SystemState::Charging)
+    this->ChargePrevState = PrevStateBits::clear_state;
+}//
+
+void ScreenTask::BatChargeTask() {
+
+  if (this->SysMeasurements.screenState == SystemState::Charging) {
+
+    if (this->ChargePrevState == PrevStateBits::clear_state) {
+      this->BatteryBits.Flags = 0x1f;
+      this->FillBat(White);
+      this->ChargePrevState = PrevStateBits::Empty;
+    }
+
+    // if ((millis() - this->ChargeAnimatetimer) >= 500) {
+
+    this->SegChargeBits.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
+    this->SegChargeBits.bit2 = (this->SysMeasurements.BatteryPercentage >= 56 && this->SysMeasurements.BatteryPercentage <= 75) ? true : false;
+    this->SegChargeBits.bit3 = (this->SysMeasurements.BatteryPercentage >= 36 && this->SysMeasurements.BatteryPercentage <= 55) ? true : false;
+    this->SegChargeBits.bit4 = (this->SysMeasurements.BatteryPercentage >= 16 && this->SysMeasurements.BatteryPercentage <= 35) ? true : false;
+    this->SegChargeBits.bit5 = (this->SysMeasurements.BatteryPercentage >= 1 && this->SysMeasurements.BatteryPercentage <= 15) ? true : false;
+
+    if (this->SegChargeBits.bit5) {
+
+      this->ChargeBits.bit4 = !this->ChargeBits.bit4;
+      if (this->ChargeBits.bit4)
+        tft.fillRoundRect(120 , 172, 80, 23, 7, Green);
+      else
+        tft.fillRoundRect(120 , 172, 80, 23, 7, White);
+
+      if (this->ChargePrevState != PrevStateBits::bit5_state) {
+        this->ChargePrevState = PrevStateBits::bit5_state;
+        this->BatteryBits.Flags = 0x10;
+        this->FillBat(Green);
+      }//
+    }//
+
+    else if (this->SegChargeBits.bit4) {
+
+      this->ChargeBits.bit3 = !this->ChargeBits.bit3;
+      if (this->ChargeBits.bit3)
+        tft.fillRoundRect(120 , 147, 80, 23, 7, Green);
+      else
+        tft.fillRoundRect(120 , 147, 80, 23, 7, White);
+
+      if (this->ChargePrevState != PrevStateBits::bit4_state) {
+        this->ChargePrevState = PrevStateBits::bit4_state;
+        this->BatteryBits.Flags = 0x18;
+        this->FillBat(Green);
+      }//
+    }//
+
+    else if (this->SegChargeBits.bit3) {
+
+      this->ChargeBits.bit2 = !this->ChargeBits.bit2;
+      if (this->ChargeBits.bit2)
+        tft.fillRoundRect(120 , 122, 80, 23, 7, Green);
+      else
+        tft.fillRoundRect(120 , 122, 80, 23, 7, White);
+
+      if (this->ChargePrevState != PrevStateBits::bit3_state) {
+        this->ChargePrevState = PrevStateBits::bit3_state;
+        this->BatteryBits.Flags = 0x1C;
+        this->FillBat(Green);
+      }//
+    }//
+
+    else if (this->SegChargeBits.bit2) {
+
+      this->ChargeBits.bit1 = !this->ChargeBits.bit1;
+      if (this->ChargeBits.bit1)
+        tft.fillRoundRect(120 , 97, 80, 23, 7, Green);
+      else
+        tft.fillRoundRect(120 , 97, 80, 23, 7, White);
+
+      if (this->ChargePrevState != PrevStateBits::bit2_state) {
+        this->ChargePrevState = PrevStateBits::bit2_state;
+        this->BatteryBits.Flags = 0x1E;
+        this->FillBat(Green);
+      }//
+    }//
+
+    else if (this->SegChargeBits.bit1) {
+
+      if (this->ChargePrevState != PrevStateBits::bit1_state) {
+        this->ChargePrevState = PrevStateBits::bit1_state;
+        this->BatteryBits.Flags = 0x1f;
+        this->FillBat(Green);
+      }//
+    }//
+  }//Charge-State
+
+}//
 
 void ScreenTask::OperationalTask() {
-    this->PowerflowGraph();
-    this->BatteryModeTask();
+  this->PowerflowGraph();
+  this->BatteryModeTask();
 }//
 
 void ScreenTask::FillBat(decltype(TFT_GREEN) color, bool Override) {
 
-    if(BatteryBits.States.bit1 || Override)
-        tft.fillRoundRect(120 ,97, 80, 23, 7, color); //100%
+  if (BatteryBits.States.bit1 || Override)
+    tft.fillRoundRect(120 , 97, 80, 23, 7, color); //100%
 
-    if(BatteryBits.States.bit1|| BatteryBits.States.bit2 || Override)
-        tft.fillRoundRect(120 ,122,80, 23, 7,color); //80%
+  if (BatteryBits.States.bit1 || BatteryBits.States.bit2 || Override)
+    tft.fillRoundRect(120 , 122, 80, 23, 7, color); //80%
 
-    if(BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3 || Override)
-        tft.fillRoundRect(120 ,147,80, 23, 7,color); //60%
-    
-    if(BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3||
-        BatteryBits.States.bit4 || Override)
-        tft.fillRoundRect(120 ,172,80, 23, 7,color); //40%
-    
-    if(BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3||
-        BatteryBits.States.bit4 ||BatteryBits.States.bit5 || Override) 
-        tft.fillRoundRect(120 ,197,80, 23, 7,color); //20%
+  if (BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3 || Override)
+    tft.fillRoundRect(120 , 147, 80, 23, 7, color); //60%
+
+  if (BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3 ||
+      BatteryBits.States.bit4 || Override)
+    tft.fillRoundRect(120 , 172, 80, 23, 7, color); //40%
+
+  if (BatteryBits.States.bit1 || BatteryBits.States.bit2 || BatteryBits.States.bit3 ||
+      BatteryBits.States.bit4 || BatteryBits.States.bit5 || Override)
+    tft.fillRoundRect(120 , 197, 80, 23, 7, color); //20%
 }//
