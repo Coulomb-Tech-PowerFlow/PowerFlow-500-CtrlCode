@@ -7,8 +7,6 @@
 #include <Arduino.h>
 // #include "Lib/Fontslib.h"
 
-#define PowerMode(x)  digitalWrite(TFT_BL, x)
-
 namespace ScreenCtrl {
 
 class ScreenTask {

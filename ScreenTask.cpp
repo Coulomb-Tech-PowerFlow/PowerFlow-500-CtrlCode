@@ -7,7 +7,8 @@ void ScreenTask::IntScreen() {
   tft.init();
   tft.fillScreen(TFT_BLACK);
   tft.setRotation(1);
-  tft.setTextFont(1);
+  tft.setTextFont(0);
+  this->SysMeasurements.SysInit();
 }
 
 void ScreenTask::WelcomeMessage() {
@@ -41,20 +42,30 @@ void ScreenTask::DrawDefaultScreen() {
   tft.setCursor(15, 85); tft.setTextColor(Green);  tft.setTextSize(2);
   tft.print("0W");
 
+  if(this->SysMeasurements.screenState == SystemState::Normal)
+    tft.drawBitmap(280, 210, power_bmp, 20, 21,Green); 
+  else if(this->SysMeasurements.screenState == SystemState::Charging)
+    tft.drawBitmap(280, 210, power_bmp, 20, 21,tft.color565(60, 60, 60)); //Test
 }
 
 void ScreenTask::PowerflowGraph() {
 
-  if (this->SysMeasurements.LoadPwr >= 5) {
+  if (this->SysMeasurements.LoadPwr >= 5 || true) {
 
     this->DrawLoadLine(White);
 
     if ((millis() - this->LoadAnimatetimer) >= 500) {
       this->loadAnimate = !this->loadAnimate;
-      if (this->loadAnimate)
+      if (this->loadAnimate){
         tft.drawRoundRect(255, 30, 60, 83, 20, White); //load
-      else
+        if(this->BatNormBit.bit5)
+            tft.drawBitmap(140, 120, caution_bmp, 40, 40, tft.color565(255, 218, 28)); //Test
+      }
+      else{
         tft.drawRoundRect(255, 30, 60, 83, 20, TFT_BLACK);
+        if(this->BatNormBit.bit5)
+            tft.drawBitmap(140, 120, caution_bmp, 40, 40, White); //Test
+      }
       this->LoadAnimatetimer = millis();
     }//
   }//
@@ -65,7 +76,7 @@ void ScreenTask::PowerflowGraph() {
     this->DrawLoadLine(TFT_BLACK);
   }
 
-  if (this->SysMeasurements.ChargePwr >= 5 || true ) {
+  if (this->SysMeasurements.ChargePwr >= 5) {
 
     this->DrawChargeLine(Green);
 
@@ -100,7 +111,7 @@ void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color) {
 
   if (color != TFT_BLACK) {
 
-    if ((millis() - this->LoadArrowTimer) >= 40) {
+    if ((millis() - this->LoadArrowTimer) >= 10) {
 
       if (LoadArrowPos.PrevArrowPosXOrigins != -1 && !this->LoadarrowSwitch) {
         tft.drawLine(LoadArrowPos.PrevArrowPosXOrigins, LoadArrowPos.ArrowPosYOrigins, LoadArrowPos.PrevarrowPosx0, LoadArrowPos.arrowPosy0, TFT_BLACK);
@@ -313,9 +324,8 @@ void ScreenTask::BatChargeTask() {
       this->BatteryBits.Flags = 0x1f;
       this->FillBat(White);
       this->ChargePrevState = PrevStateBits::Empty;
+      tft.drawBitmap(280, 210, power_bmp, 20, 21,tft.color565(60, 60, 60));
     }
-
-    // if ((millis() - this->ChargeAnimatetimer) >= 500) {
 
     this->SegChargeBits.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
     this->SegChargeBits.bit2 = (this->SysMeasurements.BatteryPercentage >= 56 && this->SysMeasurements.BatteryPercentage <= 75) ? true : false;
@@ -398,6 +408,7 @@ void ScreenTask::BatChargeTask() {
 void ScreenTask::OperationalTask() {
   this->PowerflowGraph();
   this->BatteryModeTask();
+  this->SysMeasurements.SystemTask();
 }//
 
 void ScreenTask::FillBat(decltype(TFT_GREEN) color, bool Override) {
