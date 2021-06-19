@@ -34,7 +34,7 @@ void SystemMeasurementTask::GetSystemParams(){
     for (int i = 0; i<this->MaxSampleTime;++i){
         this->Batvol += analogRead(SampleBat);
         this->Ntc += analogRead(SampleInventerTemp);
-        // this->Charge += analogRead(SampleChargeCurrent);
+        this->Charge += analogRead(SampleChargeCurrent);
         this->Load += analogRead(SampleLoadCurrent);
     }//
 
@@ -43,7 +43,7 @@ void SystemMeasurementTask::GetSystemParams(){
     this->Charge /= this->MaxSampleTime;
     this->Load /= this->MaxSampleTime;
 
-    this->BatteryVoltage = ((3.3f / 4095.0f) * this->Batvol) * 6.0f;
+    this->BatteryVoltage = ((3.3f / 4095.0f) * this->Batvol) * 5.55f;  //2k 6.0f
     this->LoadCurrent = (this->Load - LoadOffset) * this->ACS_Sensitivity;
     this->ChargeCurrent = (this->Charge - ChargeOffset) * this->ACS_Sensitivity;
 
@@ -53,9 +53,10 @@ void SystemMeasurementTask::GetSystemParams(){
     this->ChargePwr = (this->ChargePwr < 0) ? 0 : this->ChargePwr;
 
 #ifdef DEBUG
-    // Log(this->Batvol);
+    Log(this->BatteryVoltage);
     // Log(this->Ntc);
-    // Log(this->Load);
+    Log(this->Load);
+    // Log(this->Charge);
 #endif //DEBUG
 }//
 

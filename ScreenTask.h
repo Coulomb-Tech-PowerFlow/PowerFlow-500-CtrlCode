@@ -51,9 +51,10 @@ class ScreenTask {
     PrevStateBits ChargePrevState{PrevStateBits::clear_state};
 
     bool loadAnimate{false},
-         ChargeAnimate{false},
-         LoadarrowSwitch{false},
-         ChargearrowSwitch{false};
+        ChargeAnimate{false},
+        LoadarrowSwitch{false},
+        ChargearrowSwitch{false},
+        CautionFlag{false};
 };
 
 }//end of namespace

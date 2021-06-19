@@ -4,17 +4,26 @@
 
 namespace ScreenCtrl {
 
-#define SampleBat PA4
-#define SampleInventerTemp PA11
-#define SampleChargeCurrent PA12
-#define SampleLoadCurrent PA15
+/*
+TFT_MOSI A7
+TFT_MIS0 A6
+TFT_SCK A5
+TFT_CS PA2 
+TFT_DC PA3 
+TFT_RST PA4 
+*/
+
+#define SampleBat PA0
+#define SampleInventerTemp PB0
+#define SampleChargeCurrent PA1 //B0
+#define SampleLoadCurrent PB1
 #define FlashLightCtrl PB5
 #define FlashLightBtn PB3
 #define PowerButton PB4
 #define InverterFaultSense PB8
 #define InverterCtrl PB6
-#define InverterFanCtrl PB1
-#define TFT_Led PB0
+#define InverterFanCtrl PB7
+#define TFT_Led PB10
 
 #define PowerMode(x)  digitalWrite(TFT_Led, x)
 #define DEBUG true
@@ -67,7 +76,7 @@ namespace ScreenCtrl {
 
     const int MaxSampleTime = 300,
           ChargeOffset = 2032,
-          LoadOffset = 2112;
+          LoadOffset = 2031;
 
     const float ACS_Sensitivity = 0.030518f;
     const float lowBattery = 12.2f;

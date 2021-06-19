@@ -35,11 +35,11 @@ void ScreenTask::DrawDefaultScreen() {
   tft.fillRoundRect(115 , 85, 90, 140, 20, White);
 
   tft.drawBitmap(265, 40, socket_bmp, 40, 40, White);
-  tft.setCursor(265, 85); tft.setTextColor(White); tft.setTextSize(2);
+  tft.setCursor(263, 85); tft.setTextColor(White); tft.setTextSize(2);
   tft.print("0W");
 
   tft.drawBitmap(15, 40, adapter_bmp, 40, 40, Green);
-  tft.setCursor(15, 85); tft.setTextColor(Green);  tft.setTextSize(2);
+  tft.setCursor(13, 85); tft.setTextColor(Green);  tft.setTextSize(2);
   tft.print("0W");
 
   if(this->SysMeasurements.screenState == SystemState::Normal)
@@ -58,14 +58,18 @@ void ScreenTask::PowerflowGraph() {
       this->loadAnimate = !this->loadAnimate;
       if (this->loadAnimate){
         tft.drawRoundRect(255, 30, 60, 83, 20, White); //load
-        if(this->BatNormBit.bit5)
-            tft.drawBitmap(140, 120, caution_bmp, 40, 40, tft.color565(255, 218, 28)); //Test
-      }
+        if(this->BatNormBit.bit5 && this->SysMeasurements.screenState == SystemState::Normal){
+            tft.drawBitmap(140, 120, caution_bmp, 40, 40, tft.color565(255, 218, 28));
+            this->CautionFlag = true;
+        }   
+      }//
       else{
         tft.drawRoundRect(255, 30, 60, 83, 20, TFT_BLACK);
-        if(this->BatNormBit.bit5)
+        if(this->CautionFlag){
             tft.drawBitmap(140, 120, caution_bmp, 40, 40, White); //Test
-      }
+            this->CautionFlag = false;
+        }
+      }//
       this->LoadAnimatetimer = millis();
     }//
   }//
