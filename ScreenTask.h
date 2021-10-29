@@ -22,6 +22,7 @@ class ScreenTask {
     void WelcomeMessage();
     void DrawDefaultScreen();
     void OperationalTask();
+    void PowerOnCommand();
 
   private:
     TFT_eSPI tft = TFT_eSPI();
@@ -31,10 +32,12 @@ class ScreenTask {
     void DrawChargeLine(decltype(TFT_GREEN));
     void BatteryModeTask();
     void BatChargeTask();
+    void DisplayData();
 
     unsigned long LoadAnimatetimer{0},
              ChargeAnimatetimer{0},
              LoadArrowTimer{0},
+             DataRefreshTimer{0},
              ChargeArrowTimer{0};
 
     int PrevLoad{ -1},
@@ -51,10 +54,10 @@ class ScreenTask {
     PrevStateBits ChargePrevState{PrevStateBits::clear_state};
 
     bool loadAnimate{false},
-        ChargeAnimate{false},
-        LoadarrowSwitch{false},
-        ChargearrowSwitch{false},
-        CautionFlag{false};
+         ChargeAnimate{false},
+         LoadarrowSwitch{false},
+         ChargearrowSwitch{false},
+         CautionFlag{false};
 };
 
 }//end of namespace

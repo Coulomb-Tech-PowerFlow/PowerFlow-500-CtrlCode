@@ -14,6 +14,7 @@ void ScreenTask::IntScreen() {
 void ScreenTask::WelcomeMessage() {
 
 #define White tft.color565(252,252,252)
+#define Black tft.color565(0, 0, 0)
 
   tft.setTextColor(White);  tft.setTextSize(3);
   tft.setCursor(130, 115);
@@ -22,7 +23,8 @@ void ScreenTask::WelcomeMessage() {
   tft.setCursor(190, 140);
   tft.print("FLOW");
   delay(1500);
-  // PowerMode(0);
+  PowerMode(0);
+  this->SysMeasurements.SysMode = SystemMode::OFF;
   tft.fillScreen(TFT_BLACK);
 }
 
@@ -36,38 +38,40 @@ void ScreenTask::DrawDefaultScreen() {
 
   tft.drawBitmap(265, 40, socket_bmp, 40, 40, White);
   tft.setCursor(263, 85); tft.setTextColor(White); tft.setTextSize(2);
-  tft.print("0W");
+  String loadPwr = String(this->SysMeasurements.LoadPwr)+"W";
+  tft.print(loadPwr);
 
   tft.drawBitmap(15, 40, adapter_bmp, 40, 40, Green);
   tft.setCursor(13, 85); tft.setTextColor(Green);  tft.setTextSize(2);
-  tft.print("0W");
+  String chargePwr = String(this->SysMeasurements.ChargePwr)+"W";
+  tft.print(chargePwr);
 
-  if(this->SysMeasurements.screenState == SystemState::Normal)
-    tft.drawBitmap(280, 210, power_bmp, 20, 21,Green); 
-  else if(this->SysMeasurements.screenState == SystemState::Charging)
-    tft.drawBitmap(280, 210, power_bmp, 20, 21,tft.color565(60, 60, 60)); //Test
+  if (this->SysMeasurements.screenState == SystemState::Normal)
+    tft.drawBitmap(280, 210, power_bmp, 20, 21, Green);
+  else if (this->SysMeasurements.screenState == SystemState::Charging)
+    tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(60, 60, 60)); //Test
 }
 
 void ScreenTask::PowerflowGraph() {
 
-  if (this->SysMeasurements.LoadPwr >= 5 || true) {
+  if (this->SysMeasurements.LoadPwr >= 5) {
 
     this->DrawLoadLine(White);
 
     if ((millis() - this->LoadAnimatetimer) >= 500) {
       this->loadAnimate = !this->loadAnimate;
-      if (this->loadAnimate){
+      if (this->loadAnimate) {
         tft.drawRoundRect(255, 30, 60, 83, 20, White); //load
-        if(this->BatNormBit.bit5 && this->SysMeasurements.screenState == SystemState::Normal){
-            tft.drawBitmap(140, 120, caution_bmp, 40, 40, tft.color565(255, 218, 28));
-            this->CautionFlag = true;
-        }   
+        if (this->BatNormBit.bit5 && this->SysMeasurements.screenState == SystemState::Normal) {
+          tft.drawBitmap(140, 120, caution_bmp, 40, 40, tft.color565(255, 218, 28));
+          this->CautionFlag = true;
+        }
       }//
-      else{
+      else {
         tft.drawRoundRect(255, 30, 60, 83, 20, TFT_BLACK);
-        if(this->CautionFlag){
-            tft.drawBitmap(140, 120, caution_bmp, 40, 40, White); //Test
-            this->CautionFlag = false;
+        if (this->CautionFlag) {
+          tft.drawBitmap(140, 120, caution_bmp, 40, 40, White); //Test
+          this->CautionFlag = false;
         }
       }//
       this->LoadAnimatetimer = millis();
@@ -328,7 +332,7 @@ void ScreenTask::BatChargeTask() {
       this->BatteryBits.Flags = 0x1f;
       this->FillBat(White);
       this->ChargePrevState = PrevStateBits::Empty;
-      tft.drawBitmap(280, 210, power_bmp, 20, 21,tft.color565(60, 60, 60));
+      tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(60, 60, 60));
     }
 
     this->SegChargeBits.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
@@ -413,7 +417,69 @@ void ScreenTask::OperationalTask() {
   this->PowerflowGraph();
   this->BatteryModeTask();
   this->SysMeasurements.SystemTask();
+  this->PowerOnCommand();
+  this->DisplayData();
 }//
+
+void ScreenTask::DisplayData()
+{
+  if((millis() - this->DataRefreshTimer) >= 400) 
+  {
+    tft.setCursor(13, 85);
+    tft.fillRect(13, 85, 48, 20, Black); // clear charge
+    tft.setCursor(13, 85); tft.setTextColor(Green);  tft.setTextSize(2);
+    String chargePwr = String(this->SysMeasurements.ChargePwr)+"W";
+    tft.print(chargePwr);
+
+    tft.setCursor(263, 85);
+    tft.fillRect(263, 85,48,20,Black); // clear load
+    tft.setCursor(263, 85); tft.setTextColor(White); tft.setTextSize(2);
+    String loadPwr = String(this->SysMeasurements.LoadPwr)+"W";
+    tft.print(loadPwr);
+
+    this->DataRefreshTimer = millis();
+
+    if(this->SysMeasurements.InternalTemp >=40)
+        digitalWrite(InverterFanCtrl, HIGH);
+    else
+        digitalWrite(InverterFanCtrl, LOW); 
+  }//
+  
+}
+
+void ScreenTask::PowerOnCommand()
+{
+  if (digitalRead( PowerButton) == HIGH)
+  {
+    delay(100);
+    while(digitalRead(PowerButton) == HIGH){}
+
+    if (this->SysMeasurements.SysMode == SystemMode::OFF)
+    {
+      PowerMode(1);
+      digitalWrite(InverterCtrl, HIGH);
+      this->SysMeasurements.SysMode = SystemMode::ON;
+    }
+    else
+    {
+      PowerMode(0);
+      digitalWrite(InverterCtrl, LOW);
+      this->SysMeasurements.SysMode = SystemMode::OFF;
+    }
+  }
+
+  if (digitalRead(FlashLightBtn) == HIGH)
+  {
+      delay(100);
+      while(digitalRead(FlashLightBtn) == HIGH){}
+    
+    if(this->SysMeasurements.flashUpdate==true)
+        digitalWrite(FlashLightCtrl, LOW);
+    else
+      digitalWrite(FlashLightCtrl, HIGH);
+  }//
+
+}
 
 void ScreenTask::FillBat(decltype(TFT_GREEN) color, bool Override) {
 

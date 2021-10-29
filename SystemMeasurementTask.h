@@ -5,12 +5,12 @@
 namespace ScreenCtrl {
 
 /*
-TFT_MOSI A7
-TFT_MIS0 A6
-TFT_SCK A5
-TFT_CS PA2 
-TFT_DC PA3 
-TFT_RST PA4 
+  TFT_MOSI A7
+  TFT_MIS0 A6
+  TFT_SCK A5
+  TFT_CS PA2
+  TFT_DC PA3
+  TFT_RST PA4
 */
 
 #define SampleBat PA0
@@ -29,63 +29,64 @@ TFT_RST PA4
 #define DEBUG true
 #define Log(x) Serial.println(x);
 
-  enum class SystemState
-  {
-    None,
-    Normal,
-    Charging,
-    Overload,
-    BatteryLow
-  };
+enum class SystemState
+{
+  None,
+  Normal,
+  Charging,
+  Overload,
+  BatteryLow
+};
 
-  enum class SystemMode
-  {
-    OFF,
-    ON
-  };
+enum class SystemMode
+{
+  OFF,
+  ON
+};
 
-  class SystemMeasurementTask
-  {
+class SystemMeasurementTask
+{
 
   public:
-    SystemMeasurementTask() {};
+    SystemMeasurementTask() { };
     ~SystemMeasurementTask() {};
 
     int LoadPwr{0},
         ChargePwr{0},
-        BatteryPercentage{10}; // TEST
+        BatteryPercentage{0}; // TEST
 
     float LoadCurrent{0},
           ChargeCurrent{0},
-          BatteryVoltage{0};
+          BatteryVoltage{0},
+          InternalTemp{0.f};
 
     SystemState screenState{SystemState::Normal}; //TEST
     SystemMode SysMode{SystemMode::OFF};
-    
+
     void SystemTask();
     void SysInit();
 
-  private:
-    void ChargingStatus();
-    void GetSystemParams();
-    
-    bool flashUpdate{false},
+  bool flashUpdate{false},
          defaultLoad{true},
          falseShutdown{true},
          chargeing{false};
 
+  private:
+    void ChargingStatus();
+    void GetSystemParams();
+
     const int MaxSampleTime = 300,
-          ChargeOffset = 2032,
-          LoadOffset = 2031;
+              ChargeOffset = 2056,
+              LoadOffset = 2042;
 
     const float ACS_Sensitivity = 0.030518f;
-    const float lowBattery = 12.2f;
-    const float fullBattery = 15.0f;
+    const float lowBattery = 9.6;
+    const float fullBattery = 12.5f;
     const float batCal = (fullBattery - lowBattery);
 
-    int Batvol{0}, 
-        Ntc{0}, 
-        Charge{0}, 
+    int Batvol{0},
+        Ntc{0},
+        Charge{0},
         Load{0};
 };
 
