@@ -31,6 +31,8 @@ class ScreenTask {
     void PowerflowGraph();
     void DrawLoadLine(decltype(TFT_WHITE));
     void DrawChargeLine(decltype(TFT_GREEN));
+    void LoadLine(decltype(TFT_WHITE));
+    void ChargeLine(decltype(TFT_WHITE));
     void BatteryModeTask();
     void BatChargeTask();
     void DisplayData();

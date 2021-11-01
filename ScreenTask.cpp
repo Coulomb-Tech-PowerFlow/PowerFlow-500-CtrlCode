@@ -71,6 +71,32 @@ void ScreenTask::DrawDefaultScreen() {
     tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(60, 60, 60)); //Test
 }
 
+void ScreenTask::LoadLine(decltype(TFT_WHITE) color)
+{
+  tft.drawFastVLine(285, 112, 30, color);
+  tft.drawFastHLine(210, 148, 70, color);
+  tft.drawPixel(285, 142, color);
+  tft.drawPixel(284, 143, color);
+  tft.drawPixel(283, 144, color);
+  tft.drawPixel(282, 145, color);
+  tft.drawPixel(281, 146, color);
+  tft.drawPixel(280, 147, color);
+  tft.drawPixel(279, 148, color);
+}
+
+void ScreenTask::ChargeLine(decltype(TFT_WHITE) color)
+{
+    tft.drawFastVLine(35, 112, 30, color);
+    tft.drawFastHLine(41, 148, 70, color);
+    tft.drawPixel(35, 142, color);
+    tft.drawPixel(36, 143, color);
+    tft.drawPixel(37, 144, color);
+    tft.drawPixel(38, 145, color);
+    tft.drawPixel(39, 146, color);
+    tft.drawPixel(40, 147, color);
+    tft.drawPixel(41, 148, color);
+}
+
 void ScreenTask::PowerflowGraph() {
 
   if (this->SysMeasurements.LoadPwr >= 10) {
@@ -100,8 +126,7 @@ void ScreenTask::PowerflowGraph() {
   else {
     tft.drawRoundRect(255, 30, 60, 83, 20, TFT_BLACK);
     this->LoadAnimatetimer = millis();
-    this->DrawLoadLine(TFT_BLACK);
-    // tft.fillRect(10 , 150, 110, 50, TFT_BLACK); // test
+    this->LoadLine(TFT_BLACK);
     tft.drawLine(LoadArrowPos.ArrowPosXOrigins, LoadArrowPos.PrevArrowPosYOrigins, LoadArrowPos.arrowPosx0, LoadArrowPos.PrevarrowPosy0, TFT_BLACK);
     tft.drawLine(LoadArrowPos.ArrowPosXOrigins, LoadArrowPos.PrevArrowPosYOrigins, LoadArrowPos.arrowPosx1, LoadArrowPos.PrevarrowPosy1, TFT_BLACK);
     tft.drawLine(LoadArrowPos.ArrowPosXOrigins, LoadArrowPos.ArrowPosYOrigins, LoadArrowPos.arrowPosx0, LoadArrowPos.arrowPosy0, TFT_BLACK);
@@ -126,11 +151,11 @@ void ScreenTask::PowerflowGraph() {
       this->ChargeAnimatetimer = millis();
     } //
   }//
+
   else {
     tft.drawRoundRect(5, 30, 60, 83, 20, TFT_BLACK);
     this->ChargeAnimatetimer = millis();
-    this->DrawChargeLine(TFT_BLACK);
-    // tft.fillRect(210 , 150, 70, 50, TFT_BLACK); // test
+    this->ChargeLine(TFT_BLACK);
     tft.drawLine(ChargeArrowPos.PrevArrowPosXOrigins, ChargeArrowPos.ArrowPosYOrigins, ChargeArrowPos.PrevarrowPosx0, ChargeArrowPos.arrowPosy0, TFT_BLACK);
     tft.drawLine(ChargeArrowPos.PrevArrowPosXOrigins, ChargeArrowPos.ArrowPosYOrigins, ChargeArrowPos.PrevarrowPosx1, ChargeArrowPos.arrowPosy1, TFT_BLACK);
     tft.drawLine(ChargeArrowPos.ArrowPosXOrigins, ChargeArrowPos.ArrowPosYOrigins, ChargeArrowPos.arrowPosx0, ChargeArrowPos.arrowPosy0, TFT_BLACK);
@@ -142,15 +167,7 @@ void ScreenTask::PowerflowGraph() {
 
 void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color) {
 
-  tft.drawFastVLine(285, 112, 30, color);
-  tft.drawFastHLine(210, 148, 70, color);
-  tft.drawPixel(285, 142, color);
-  tft.drawPixel(284, 143, color);
-  tft.drawPixel(283, 144, color);
-  tft.drawPixel(282, 145, color);
-  tft.drawPixel(281, 146, color);
-  tft.drawPixel(280, 147, color);
-  tft.drawPixel(279, 148, color);
+  this->LoadLine(color);
 
   if (color != TFT_BLACK) {
 
@@ -231,15 +248,7 @@ void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color) {
 
 void ScreenTask::DrawChargeLine(decltype(TFT_GREEN) color) {
 
-  tft.drawFastVLine(35, 112, 30, color);
-  tft.drawFastHLine(41, 148, 70, color);
-  tft.drawPixel(35, 142, color);
-  tft.drawPixel(36, 143, color);
-  tft.drawPixel(37, 144, color);
-  tft.drawPixel(38, 145, color);
-  tft.drawPixel(39, 146, color);
-  tft.drawPixel(40, 147, color);
-  tft.drawPixel(41, 148, color);
+  this->ChargeLine(color);
 
   if (color != TFT_BLACK) {
 
@@ -372,7 +381,10 @@ void ScreenTask::BatChargeTask() {
       this->BatteryBits.Flags = 0x1f;
       this->FillBat(White);
       this->ChargePrevState = PrevStateBits::Empty;
-      tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(60, 60, 60));
+      if(this->SysMeasurements.SysMode == SystemMode::OFF)
+        tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(60, 60, 60));
+      else
+      tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(46,170,113));
     }
 
     this->SegChargeBits.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
