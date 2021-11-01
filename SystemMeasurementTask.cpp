@@ -17,10 +17,8 @@ void SystemMeasurementTask::ChargingStatus() {
 
   else {
     if (this->chargeing == true) {
-
-      this->screenState = SystemState::Charging;
+      this->screenState = SystemState::Normal;
       this->chargeing = false;
-
       if (this->SysMode == SystemMode::OFF)
         PowerMode(0);
     }
@@ -49,6 +47,8 @@ void SystemMeasurementTask::GetSystemParams() {
   this->LoadCurrent = (this->Load - LoadOffset) * this->ACS_Sensitivity;
   this->ChargeCurrent = (this->Charge - ChargeOffset) * this->ACS_Sensitivity;
 
+  this->BatteryPercentage = (this->BatteryPercentage < 0) ? 0 : this->BatteryPercentage;
+  this->BatteryPercentage = (this->BatteryPercentage > 100) ? 100 : this->BatteryPercentage;
   this->LoadPwr = (int)(this->LoadCurrent * this->BatteryVoltage);
   this->ChargePwr = (int)(this->ChargeCurrent * this->BatteryVoltage);
   this->LoadPwr = (this->LoadPwr < 0) ? 0 : this->LoadPwr;
@@ -62,10 +62,9 @@ void SystemMeasurementTask::GetSystemParams() {
 #ifdef DEBUG
   Log(this->BatteryVoltage);
   Log(this->InternalTemp);
-  Log(this->LoadPwr);
-  Log(this->ChargePwr);
+  Log(this->Load);
+  Log(this->Charge);
   Log(this->BatteryPercentage);
-  // Log(this->Charge);
 #endif //DEBUG
 }//
 
@@ -77,7 +76,8 @@ void SystemMeasurementTask::SystemTask() {
 void SystemMeasurementTask::SysInit() {
   pinMode(InverterCtrl, OUTPUT);
   pinMode(InverterFanCtrl, OUTPUT);
-  pinMode(FlashLightBtn, OUTPUT);
+  pinMode(FlashLightCtrl, OUTPUT);
+  pinMode(FlashLightBtn, INPUT);
   pinMode(PowerButton, INPUT);
   pinMode(SampleBat, INPUT_ANALOG);
   pinMode(SampleInventerTemp, INPUT_ANALOG);

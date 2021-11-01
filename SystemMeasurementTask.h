@@ -18,7 +18,7 @@ namespace ScreenCtrl {
 #define SampleChargeCurrent PA1 //B0
 #define SampleLoadCurrent PB1
 #define FlashLightCtrl PB5
-#define FlashLightBtn PB3
+#define FlashLightBtn PB3 
 #define PowerButton PB4
 #define InverterFaultSense PB8
 #define InverterCtrl PB6
@@ -71,23 +71,24 @@ class SystemMeasurementTask
          falseShutdown{true},
          chargeing{false};
 
-  private:
-    void ChargingStatus();
-    void GetSystemParams();
+  const float lowBattery = 12.5f; //9.6;
+  const float fullBattery = 16.f; //12.5f;
 
-    const int MaxSampleTime = 300,
-              ChargeOffset = 2056,
-              LoadOffset = 2042;
+private:
+  void ChargingStatus();
+  void GetSystemParams();
 
-    const float ACS_Sensitivity = 0.030518f;
-    const float lowBattery = 9.6;
-    const float fullBattery = 12.5f;
-    const float batCal = (fullBattery - lowBattery);
+  const int MaxSampleTime = 300,
+            ChargeOffset = 2060,
+            LoadOffset = 2060;
 
-    int Batvol{0},
-        Ntc{0},
-        Charge{0},
-        Load{0};
+  const float ACS_Sensitivity = 0.030518f;
+  const float batCal = (fullBattery - lowBattery);
+
+  int Batvol{0},
+      Ntc{0},
+      Charge{0},
+      Load{0};
 };
 
 } // end of namespaces

@@ -23,6 +23,7 @@ class ScreenTask {
     void DrawDefaultScreen();
     void OperationalTask();
     void PowerOnCommand();
+    SystemMeasurementTask SysMeasurements;
 
   private:
     TFT_eSPI tft = TFT_eSPI();
@@ -33,17 +34,19 @@ class ScreenTask {
     void BatteryModeTask();
     void BatChargeTask();
     void DisplayData();
+    void BatteryLowMessage();
+    void OverLoadMessage();
 
     unsigned long LoadAnimatetimer{0},
              ChargeAnimatetimer{0},
              LoadArrowTimer{0},
              DataRefreshTimer{0},
+             BatRefreshTimer{0},
              ChargeArrowTimer{0};
 
     int PrevLoad{ -1},
         prevCharge{ -1};
 
-    SystemMeasurementTask SysMeasurements;
     BatSegFields BatteryBits;
     ArrowposDat LoadArrowPos = ArrowposDat(224, 218, 218, 148, 142, 154);
     ArrowposDat ChargeArrowPos = ArrowposDat(35, 29, 41, 124, 118, 118);
