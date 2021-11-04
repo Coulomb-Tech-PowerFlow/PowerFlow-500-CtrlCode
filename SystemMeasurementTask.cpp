@@ -56,7 +56,7 @@ void SystemMeasurementTask::GetSystemParams() {
 
   float r2 = 10000 * (4095 / (float)this->Ntc - 1.0);
   float logr2 = log(r2);
-  this->InternalTemp = (1.0 / (c1 + c2*logr2 + c3*logr2*logr2*logr2));
+  this->InternalTemp = (1.0 / (c1 + c2 * logr2 + c3 * logr2 * logr2 * logr2));
   this->InternalTemp = this->InternalTemp - 273.15;
 
 #ifdef DEBUG
@@ -65,6 +65,7 @@ void SystemMeasurementTask::GetSystemParams() {
   Log(this->Load);
   Log(this->Charge);
   Log(this->BatteryPercentage);
+  Serial.println((int)this->screenState);
 #endif //DEBUG
 }//
 
@@ -78,6 +79,7 @@ void SystemMeasurementTask::SysInit() {
   pinMode(InverterFanCtrl, OUTPUT);
   pinMode(FlashLightCtrl, OUTPUT);
   pinMode(FlashLightBtn, INPUT);
+  pinMode(InverterFaultSense, INPUT);
   pinMode(PowerButton, INPUT);
   pinMode(SampleBat, INPUT_ANALOG);
   pinMode(SampleInventerTemp, INPUT_ANALOG);

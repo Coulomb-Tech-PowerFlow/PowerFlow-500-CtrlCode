@@ -62,7 +62,8 @@ class ScreenTask {
          ChargeAnimate{false},
          LoadarrowSwitch{false},
          ChargearrowSwitch{false},
-         CautionFlag{false};
+         CautionFlag{false},
+         InverterFanState{false};
 };
 
 }//end of namespace

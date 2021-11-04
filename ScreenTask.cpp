@@ -21,7 +21,7 @@ void ScreenTask::WelcomeMessage() {
   tft.print("OWER");
   tft.setCursor(190, 140);
   tft.print("FLOW");
-  delay(1500);
+  delay(2000);
   PowerMode(0);
   this->SysMeasurements.SysMode = SystemMode::OFF;
   tft.fillScreen(TFT_BLACK);
@@ -30,9 +30,9 @@ void ScreenTask::WelcomeMessage() {
 void ScreenTask::BatteryLowMessage()
 {
   tft.setTextColor(tft.color565(180, 0, 0));  tft.setTextSize(3);
-  tft.setCursor(80, 115);
+  tft.setCursor(60, 105);
   tft.print("Battery Low");
-  tft.setCursor(100, 140);
+  tft.setCursor(80, 130);
   tft.setTextColor(tft.color565(252, 252, 252));
   tft.print("System Down");
 }
@@ -40,9 +40,9 @@ void ScreenTask::BatteryLowMessage()
 void ScreenTask::OverLoadMessage()
 {
   tft.setTextColor(tft.color565(180, 0, 0));  tft.setTextSize(3);
-  tft.setCursor(80, 115);
+  tft.setCursor(60, 105);
   tft.print("OverLoad");
-  tft.setCursor(100, 140);
+  tft.setCursor(60, 130);
   tft.setTextColor(tft.color565(252, 252, 252));
   tft.print("System Down");
 }
@@ -57,12 +57,12 @@ void ScreenTask::DrawDefaultScreen() {
 
   tft.drawBitmap(265, 40, socket_bmp, 40, 40, White);
   tft.setCursor(263, 85); tft.setTextColor(White); tft.setTextSize(2);
-  String loadPwr = String(this->SysMeasurements.LoadPwr)+"W";
+  String loadPwr = String(this->SysMeasurements.LoadPwr) + "W";
   tft.print(loadPwr);
 
   tft.drawBitmap(15, 40, adapter_bmp, 40, 40, Green);
   tft.setCursor(13, 85); tft.setTextColor(Green);  tft.setTextSize(2);
-  String chargePwr = String(this->SysMeasurements.ChargePwr)+"W";
+  String chargePwr = String(this->SysMeasurements.ChargePwr) + "W";
   tft.print(chargePwr);
 
   if (this->SysMeasurements.screenState == SystemState::Normal)
@@ -86,15 +86,15 @@ void ScreenTask::LoadLine(decltype(TFT_WHITE) color)
 
 void ScreenTask::ChargeLine(decltype(TFT_WHITE) color)
 {
-    tft.drawFastVLine(35, 112, 30, color);
-    tft.drawFastHLine(41, 148, 70, color);
-    tft.drawPixel(35, 142, color);
-    tft.drawPixel(36, 143, color);
-    tft.drawPixel(37, 144, color);
-    tft.drawPixel(38, 145, color);
-    tft.drawPixel(39, 146, color);
-    tft.drawPixel(40, 147, color);
-    tft.drawPixel(41, 148, color);
+  tft.drawFastVLine(35, 112, 30, color);
+  tft.drawFastHLine(41, 148, 70, color);
+  tft.drawPixel(35, 142, color);
+  tft.drawPixel(36, 143, color);
+  tft.drawPixel(37, 144, color);
+  tft.drawPixel(38, 145, color);
+  tft.drawPixel(39, 146, color);
+  tft.drawPixel(40, 147, color);
+  tft.drawPixel(41, 148, color);
 }
 
 void ScreenTask::PowerflowGraph() {
@@ -163,7 +163,7 @@ void ScreenTask::PowerflowGraph() {
     tft.drawLine(ChargeArrowPos.ArrowPosXOrigins, ChargeArrowPos.PrevArrowPosYOrigins, ChargeArrowPos.arrowPosx0, ChargeArrowPos.PrevarrowPosy0, TFT_BLACK);
     tft.drawLine(ChargeArrowPos.ArrowPosXOrigins, ChargeArrowPos.PrevArrowPosYOrigins, ChargeArrowPos.arrowPosx1, ChargeArrowPos.PrevarrowPosy1, TFT_BLACK);
   }
-}// 
+}//
 
 void ScreenTask::DrawLoadLine(decltype(TFT_WHITE) color) {
 
@@ -321,51 +321,51 @@ void ScreenTask::BatteryModeTask() {
 
   if (this->SysMeasurements.screenState == SystemState::Normal) {
 
-  if((millis() - this->BatRefreshTimer) >= 500) 
-  {
-    this->BatNormBit.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
-    this->BatNormBit.bit2 = (this->SysMeasurements.BatteryPercentage >= 56 && this->SysMeasurements.BatteryPercentage <= 75) ? true : false;
-    this->BatNormBit.bit3 = (this->SysMeasurements.BatteryPercentage >= 36 && this->SysMeasurements.BatteryPercentage <= 55) ? true : false;
-    this->BatNormBit.bit4 = (this->SysMeasurements.BatteryPercentage >= 16 && this->SysMeasurements.BatteryPercentage <= 35) ? true : false;
-    this->BatNormBit.bit5 = (this->SysMeasurements.BatteryPercentage >= 1 && this->SysMeasurements.BatteryPercentage <= 15) ? true : false;
+    if ((millis() - this->BatRefreshTimer) >= 500)
+    {
+      this->BatNormBit.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
+      this->BatNormBit.bit2 = (this->SysMeasurements.BatteryPercentage >= 56 && this->SysMeasurements.BatteryPercentage <= 75) ? true : false;
+      this->BatNormBit.bit3 = (this->SysMeasurements.BatteryPercentage >= 36 && this->SysMeasurements.BatteryPercentage <= 55) ? true : false;
+      this->BatNormBit.bit4 = (this->SysMeasurements.BatteryPercentage >= 16 && this->SysMeasurements.BatteryPercentage <= 35) ? true : false;
+      this->BatNormBit.bit5 = (this->SysMeasurements.BatteryPercentage >= 1 && this->SysMeasurements.BatteryPercentage <= 15) ? true : false;
 
-    if (this->BatNormBit.bit1 && this->BatNormPrevState != PrevStateBits::bit1_state) {
-      this->BatNormPrevState = PrevStateBits::bit1_state;
-      this->FillBat(White, true);
-      this->BatteryBits.Flags = 0x1f;
-      this->FillBat(Green);
-    }//
+      if (this->BatNormBit.bit1 && this->BatNormPrevState != PrevStateBits::bit1_state) {
+        this->BatNormPrevState = PrevStateBits::bit1_state;
+        this->FillBat(White, true);
+        this->BatteryBits.Flags = 0x1f;
+        this->FillBat(Green);
+      }//
 
-    else if (this->BatNormBit.bit2 && this->BatNormPrevState != PrevStateBits::bit2_state) {
-      this->BatNormPrevState = PrevStateBits::bit2_state;
-      this->FillBat(White, true);
-      this->BatteryBits.Flags = 0x1E;
-      this->FillBat(Green);
-    }
+      else if (this->BatNormBit.bit2 && this->BatNormPrevState != PrevStateBits::bit2_state) {
+        this->BatNormPrevState = PrevStateBits::bit2_state;
+        this->FillBat(White, true);
+        this->BatteryBits.Flags = 0x1E;
+        this->FillBat(Green);
+      }
 
-    else if (this->BatNormBit.bit3 && this->BatNormPrevState != PrevStateBits::bit3_state) {
-      this->BatNormPrevState = PrevStateBits::bit3_state;
-      this->FillBat(White, true);
-      this->BatteryBits.Flags = 0x1C;
-      this->FillBat(Green);
-    }
+      else if (this->BatNormBit.bit3 && this->BatNormPrevState != PrevStateBits::bit3_state) {
+        this->BatNormPrevState = PrevStateBits::bit3_state;
+        this->FillBat(White, true);
+        this->BatteryBits.Flags = 0x1C;
+        this->FillBat(Green);
+      }
 
-    else if (this->BatNormBit.bit4 && this->BatNormPrevState != PrevStateBits::bit4_state) {
-      this->BatNormPrevState = PrevStateBits::bit4_state;
-      this->FillBat(White, true);
-      this->BatteryBits.Flags = 0x18;
-      this->FillBat(Green);
-    }
+      else if (this->BatNormBit.bit4 && this->BatNormPrevState != PrevStateBits::bit4_state) {
+        this->BatNormPrevState = PrevStateBits::bit4_state;
+        this->FillBat(White, true);
+        this->BatteryBits.Flags = 0x18;
+        this->FillBat(Green);
+      }
 
-    else if (this->BatNormBit.bit5 && this->BatNormPrevState != PrevStateBits::bit5_state) {
-      this->BatNormPrevState = PrevStateBits::bit5_state;
-      this->FillBat(White, true);
-      this->BatteryBits.Flags = 0x10;
-      this->FillBat(tft.color565(180, 0, 0));
-    }
+      else if (this->BatNormBit.bit5 && this->BatNormPrevState != PrevStateBits::bit5_state) {
+        this->BatNormPrevState = PrevStateBits::bit5_state;
+        this->FillBat(White, true);
+        this->BatteryBits.Flags = 0x10;
+        this->FillBat(tft.color565(180, 0, 0));
+      }
 
-    this->BatRefreshTimer = millis();
-  }//Milli
+      this->BatRefreshTimer = millis();
+    }//Milli
 
   }//Normal-State
 
@@ -381,10 +381,10 @@ void ScreenTask::BatChargeTask() {
       this->BatteryBits.Flags = 0x1f;
       this->FillBat(White);
       this->ChargePrevState = PrevStateBits::Empty;
-      if(this->SysMeasurements.SysMode == SystemMode::OFF)
+      if (this->SysMeasurements.SysMode == SystemMode::OFF)
         tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(60, 60, 60));
       else
-      tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(46,170,113));
+        tft.drawBitmap(280, 210, power_bmp, 20, 21, tft.color565(46, 170, 113));
     }
 
     this->SegChargeBits.bit1 = (this->SysMeasurements.BatteryPercentage >= 76 && this->SysMeasurements.BatteryPercentage <= 100) ? true : false;
@@ -465,64 +465,122 @@ void ScreenTask::BatChargeTask() {
 
 }//
 
-void ScreenTask::OperationalTask() {
+void ScreenTask::OperationalTask()
+{
   this->SysMeasurements.SystemTask();
-  this->PowerflowGraph();
-  this->BatteryModeTask();
-  this->DisplayData();
+
+  if ((this->SysMeasurements.batLow && this->SysMeasurements.screenState != SystemState::BatteryLow) ||
+      (this->SysMeasurements.overload && this->SysMeasurements.screenState != SystemState::Overload))
+  {
+    this->SysMeasurements.screenState = SystemState::Normal;
+    tft.fillScreen(TFT_BLACK);
+    this->DrawDefaultScreen();
+    this->BatNormPrevState = PrevStateBits::clear_state;
+    this->ChargePrevState = PrevStateBits::clear_state;
+    this->SysMeasurements.batLow = false;
+    this->SysMeasurements.overload = false;
+  }
+
+  if (this->SysMeasurements.screenState == SystemState::Normal || this->SysMeasurements.screenState == SystemState::Charging)
+  {
+    this->PowerflowGraph();
+    this->BatteryModeTask();
+    this->DisplayData();
+  }
   this->PowerOnCommand();
 
   if (this->SysMeasurements.BatteryVoltage < this->SysMeasurements.lowBattery &&
-    this->SysMeasurements.BatteryPercentage == 0 && 
-    this->SysMeasurements.screenState != SystemState::Charging)
+      this->SysMeasurements.BatteryPercentage == 0 &&
+      this->SysMeasurements.screenState != SystemState::Charging && this->SysMeasurements.screenState != SystemState::BatteryLow )
   {
+    this->SysMeasurements.batLow = true;
     digitalWrite(InverterCtrl, LOW);
+    digitalWrite(InverterFanCtrl, LOW);
     this->SysMeasurements.screenState = SystemState::BatteryLow;
     this->SysMeasurements.SysMode = SystemMode::OFF;
     tft.fillScreen(TFT_BLACK);
     BatteryLowMessage();
+  }//
+
+  if (digitalRead(InverterFaultSense) == LOW || this->SysMeasurements.LoadPwr >= 400 && this->SysMeasurements.SysMode == SystemMode::ON)
+  {
+    delay(8000);
+    if (this->SysMeasurements.LoadPwr >= 400 || digitalRead(InverterFaultSense) == LOW)
+    {
+      this->SysMeasurements.overload = true;
+      digitalWrite(InverterCtrl, LOW);
+      digitalWrite(InverterFanCtrl, LOW);
+      this->SysMeasurements.screenState = SystemState::Overload;
+      this->SysMeasurements.SysMode = SystemMode::OFF;
+      tft.fillScreen(TFT_BLACK);
+      OverLoadMessage();
+    }
   }
+
 }//
 
 void ScreenTask::DisplayData()
 {
-  if((millis() - this->DataRefreshTimer) >= 400) 
+  if ((millis() - this->DataRefreshTimer) >= 400)
   {
-    if(this->prevCharge != this->SysMeasurements.ChargePwr)
+    if (this->prevCharge != this->SysMeasurements.ChargePwr)
     {
       tft.setCursor(13, 85);
       tft.fillRect(13, 85, 48, 20, Black); // clear charge
       tft.setCursor(13, 85); tft.setTextColor(Green);  tft.setTextSize(2);
-      String chargePwr = String(this->SysMeasurements.ChargePwr)+"W";
+      String chargePwr = String(this->SysMeasurements.ChargePwr) + "W";
       tft.print(chargePwr);
       this->prevCharge = this->SysMeasurements.ChargePwr;
     }
 
-    if(this->PrevLoad!=this->SysMeasurements.LoadPwr)
-    {    
+    if (this->PrevLoad != this->SysMeasurements.LoadPwr)
+    {
       tft.setCursor(263, 85);
-      tft.fillRect(263, 85,48,20,Black); // clear load
+      tft.fillRect(263, 85, 48, 20, Black); // clear load
       tft.setCursor(263, 85); tft.setTextColor(White); tft.setTextSize(2);
-      String loadPwr = String(this->SysMeasurements.LoadPwr)+"W";
+      String loadPwr = String(this->SysMeasurements.LoadPwr) + "W";
       tft.print(loadPwr);
       this->PrevLoad = this->SysMeasurements.LoadPwr;
     }
 
     this->DataRefreshTimer = millis();
 
-    if(this->SysMeasurements.InternalTemp >=40)
-        digitalWrite(InverterFanCtrl, HIGH);
+    if (this->SysMeasurements.InternalTemp >= 43)
+    {
+      digitalWrite(InverterFanCtrl, HIGH);
+      this->InverterFanState = true;
+    }//
+
     else
-        digitalWrite(InverterFanCtrl, LOW); 
+    {
+      if (this->InverterFanState == true)
+      {
+        if (this->SysMeasurements.InternalTemp <= 39)
+        {
+          digitalWrite(InverterFanCtrl, HIGH);
+          this->InverterFanState = false;
+        }
+      }//
+      else
+        digitalWrite(InverterFanCtrl, LOW);
+    }//
+
   }//
-  
+
 }
 
 void ScreenTask::PowerOnCommand()
 {
+  if (digitalRead( PowerButton) == HIGH)
+  {
+    delay(100);
+    while (digitalRead(PowerButton) == HIGH) {}
 
-  if(this->SysMeasurements.screenState == SystemState::BatteryLow)
+    if (this->SysMeasurements.screenState == SystemState::BatteryLow ||
+        this->SysMeasurements.screenState == SystemState::Overload)
     {
+      this->SysMeasurements.batLow = false;
+      this->SysMeasurements.overload = false;
       PowerMode(0);
       this->SysMeasurements.screenState = SystemState::Normal;
       tft.fillScreen(TFT_BLACK);
@@ -531,11 +589,6 @@ void ScreenTask::PowerOnCommand()
       this->ChargePrevState = PrevStateBits::clear_state;
       return;
     }
-
-  if (digitalRead( PowerButton) == HIGH)
-  {
-    delay(100);
-    while(digitalRead(PowerButton) == HIGH){}
 
     if (this->SysMeasurements.SysMode == SystemMode::OFF)
     {
@@ -547,6 +600,7 @@ void ScreenTask::PowerOnCommand()
     else
     {
       digitalWrite(InverterCtrl, LOW);
+      digitalWrite(InverterFanCtrl, LOW);
       PowerMode(0);
       this->IntScreen();
       tft.fillScreen(TFT_BLACK);
@@ -561,19 +615,19 @@ void ScreenTask::PowerOnCommand()
 
   if (digitalRead(FlashLightBtn) == HIGH)
   {
-      delay(100);
-      while(digitalRead(FlashLightBtn) == HIGH){}
-    
-    if(this->SysMeasurements.flashUpdate==true)
-      {
-        digitalWrite(FlashLightCtrl, LOW);
-        this->SysMeasurements.flashUpdate = false;
-      }
+    delay(100);
+    while (digitalRead(FlashLightBtn) == HIGH) {}
+
+    if (this->SysMeasurements.flashUpdate == true)
+    {
+      digitalWrite(FlashLightCtrl, LOW);
+      this->SysMeasurements.flashUpdate = false;
+    }
     else
-      {
-        digitalWrite(FlashLightCtrl, HIGH);
-        this->SysMeasurements.flashUpdate = true;
-      }
+    {
+      digitalWrite(FlashLightCtrl, HIGH);
+      this->SysMeasurements.flashUpdate = true;
+    }
   }//
 
 }
