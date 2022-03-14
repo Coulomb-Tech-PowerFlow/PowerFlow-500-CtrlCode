@@ -44,7 +44,10 @@ class ScreenTask {
              LoadArrowTimer{0},
              DataRefreshTimer{0},
              BatRefreshTimer{0},
+             OverloadTimer{0},
              ChargeArrowTimer{0};
+
+    bool checkErrState {false};
 
     int PrevLoad{ -1},
         prevCharge{ -1};

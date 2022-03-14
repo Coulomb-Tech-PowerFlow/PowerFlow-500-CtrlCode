@@ -504,16 +504,28 @@ void ScreenTask::OperationalTask()
 
   if (digitalRead(InverterFaultSense) == LOW || this->SysMeasurements.LoadPwr >= 400 && this->SysMeasurements.SysMode == SystemMode::ON)
   {
-    delay(8000);
-    if (this->SysMeasurements.LoadPwr >= 400 || digitalRead(InverterFaultSense) == LOW)
+    if (this->checkErrState == false)
     {
-      this->SysMeasurements.overload = true;
-      digitalWrite(InverterCtrl, LOW);
-      digitalWrite(InverterFanCtrl, LOW);
-      this->SysMeasurements.screenState = SystemState::Overload;
-      this->SysMeasurements.SysMode = SystemMode::OFF;
-      tft.fillScreen(TFT_BLACK);
-      OverLoadMessage();
+      this->checkErrState = true;
+      OverloadTimer = millis();
+    }
+
+    else
+    {
+      if ((millis() - this->OverloadTimer) >= 2000)
+      {
+        if (this->SysMeasurements.LoadPwr >= 400 || digitalRead(InverterFaultSense) == LOW)
+        {
+          this->SysMeasurements.overload = true;
+          digitalWrite(InverterCtrl, LOW);
+          digitalWrite(InverterFanCtrl, LOW);
+          this->SysMeasurements.screenState = SystemState::Overload;
+          this->SysMeasurements.SysMode = SystemMode::OFF;
+          tft.fillScreen(TFT_BLACK);
+          OverLoadMessage();
+        }
+        this->checkErrState = false;
+      }//
     }
   }
 
@@ -547,7 +559,13 @@ void ScreenTask::DisplayData()
 
     if (this->SysMeasurements.InternalTemp >= 43)
     {
-      digitalWrite(InverterFanCtrl, HIGH);
+      auto fanspeed = 0;
+      if (this->SysMeasurements.InternalTemp <= 43)
+        fanspeed = 130;
+      else if (this->SysMeasurements.InternalTemp > 43)
+        fanspeed = 160;
+
+      analogWrite(InverterFanCtrl, fanspeed);
       this->InverterFanState = true;
     }//
 
@@ -557,12 +575,21 @@ void ScreenTask::DisplayData()
       {
         if (this->SysMeasurements.InternalTemp <= 39)
         {
-          digitalWrite(InverterFanCtrl, HIGH);
+          auto fanspeed = 0;
+          if (this->SysMeasurements.InternalTemp <= 43)
+            fanspeed = 130;
+          else if (this->SysMeasurements.InternalTemp > 43)
+            fanspeed = 160;
+          analogWrite(InverterFanCtrl, fanspeed);
           this->InverterFanState = false;
         }
       }//
       else
+      {
+        analogWrite(InverterFanCtrl, 0);
         digitalWrite(InverterFanCtrl, LOW);
+      }
+
     }//
 
   }//

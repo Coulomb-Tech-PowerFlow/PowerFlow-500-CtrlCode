@@ -80,10 +80,10 @@ class SystemMeasurementTask
     void ChargingStatus();
     void GetSystemParams();
 
-    const int MaxSampleTime = 300,
-              ChargeOffset = 2240, //2060,
-              LoadOffset = 2060;             //2060;
-
+   const int MaxSampleTime = 300,
+              ChargeOffset = 2241, //2060,
+              LoadOffset = 2051;             //2060;
+              
     const float ACS_Sensitivity = 0.030518f;
     const float batCal = (fullBattery - lowBattery);
 
